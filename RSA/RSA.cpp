@@ -4,18 +4,72 @@
 #include "pch.h"
 #include <iostream>
 
+#define P 23
+#define Q 11
+#define E 7
+#define X 27
+
+using namespace std;
+
+int exgcd(int a, int b, int &x, int &y);
+int power_mod(int c, int e, int n);
+
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	int p = P;
+	int q = Q;
+	int e = E;
+	int n = p * q;
+	int phyn = (p - 1)*(q - 1);
+	int d, k, y, z;
+	int x = X;
+
+	exgcd(e, phyn, d, k);
+	y = power_mod(x, e, n);
+	z = power_mod(y, d, n);
+
+	cout << "Original data: " << x << endl;
+	cout << "Key: " << d << endl;
+	cout << "Encrypted data: " << y << endl;
+	cout << "Decrypted data: " << z << endl;
+
+	return 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+int power_mod(int c, int e, int n)
+{
+	int rst = 1;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+	while (e > 0)
+	{
+		if (e % 2 == 0)
+		{
+			c *= c;
+			c %= n;
+			e /= 2;
+		}
+		else
+		{
+			rst *= c;
+			rst %= n;
+			e -= 1;
+		}
+	}
+	return rst;
+}
+
+int exgcd(int a, int b, int &x, int &y)
+{
+	if (b == 0)
+	{
+		x = 1;
+		y = 0;
+		return a;
+	}
+	int gcd = exgcd(b, a%b, x, y);
+	int x2 = x, y2 = y;
+	x = y2;
+	y = x2 - (a / b)*y2;
+
+	return gcd;
+}
